@@ -1,7 +1,7 @@
 const audio = new Audio(chrome.runtime.getURL('Mrrp.mp3'));
 let isAudioEnabled = false;
 const observer = new MutationObserver(checkForSmile);   // Observe DOM changes and apply the function
-const hoverCooldown = 10; // Cooldown for hover sound
+const hoverCooldown = 10; // Cooldown per instance of `:3`. There to stop constant replays of the sound
 const processedNodes = new WeakSet(); // Prevent double-wrapping
 let audioContext = null;
 
@@ -12,10 +12,12 @@ try {
     console.warn('AudioContext not supported, falling back to webkitAudioContext');
     audioContext = new (window.AudioContext || window.webkitAudioContext)();
 }
+audioContext.suspend(); // Suspend audio context until user interaction. Done as default, but here for redundancy
 
-function playSound() {
+async function playSound() {
     if (!isAudioEnabled) { console.warn("Sound is disabled."); return; }
-    audio.play().then(console.log('Mrrp :3')).catch(error => console.error('Error playing sound:', error));
+    const audioInstance = new Audio(chrome.runtime.getURL('Mrrp.mp3'));
+    await audioInstance.play().then(console.log('Mrrp :3')).catch(error => console.error('Error playing sound:', error));
 }
 
 // Function to wrap `:3` in a <span>
@@ -82,6 +84,7 @@ observer.observe(document.body, { childList: true, subtree: true, characterData:
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "enableSound") {
         audioContext.resume().then(() => {
+            checkForSmile();
             isAudioEnabled = true;
             console.log("Sound enabled for :3");
         });
@@ -89,4 +92,5 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 });
 
 // Initial scan for existing `:3`
-checkForSmile();
+//checkForSmile();
+// Uncomment this line to run the initial scan on load. Otherwise it will run on enableSound message
