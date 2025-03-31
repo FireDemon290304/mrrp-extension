@@ -1,7 +1,7 @@
 const audio = new Audio(chrome.runtime.getURL('Mrrp.mp3'));
 let isAudioEnabled = false;
 const observer = new MutationObserver(checkForSmile);   // Observe DOM changes and apply the function
-const hoverCooldown = 100; // Cooldown for hover sound
+const hoverCooldown = 10; // Cooldown for hover sound
 const processedNodes = new WeakSet(); // Prevent double-wrapping
 let audioContext = null;
 
@@ -15,7 +15,7 @@ try {
 
 function playSound() {
     if (!isAudioEnabled) { console.warn("Sound is disabled."); return; }
-    audio.play().catch(error => console.error('Error playing sound:', error));
+    audio.play().then(console.log('Mrrp :3')).catch(error => console.error('Error playing sound:', error));
 }
 
 // Function to wrap `:3` in a <span>
