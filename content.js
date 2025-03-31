@@ -1,14 +1,20 @@
 const audio = new Audio(chrome.runtime.getURL('Mrrp.mp3'));
 let isAudioEnabled = false;
-const observer = new MutationObserver(checkForSmile);
-const hoverCooldown = 1000; // 1-second cooldown for hover sound
+const observer = new MutationObserver(checkForSmile);   // Observe DOM changes and apply the function
+const hoverCooldown = 500; // Cooldown for hover sound
 const processedNodes = new WeakSet(); // Prevent double-wrapping
+let audioContext = null;
 
-// Enable audio context on user interaction
-const audioContext = new (window.AudioContext || window.webkitAudioContext)();
+// Enable audio context later on user interaction
+try {
+    audioContext = new AudioContext();
+} catch (error) {
+    console.warn('AudioContext not supported, falling back to webkitAudioContext');
+    audioContext = new (window.AudioContext || window.webkitAudioContext)();
+}
 
 function playSound() {
-    if (!isAudioEnabled) return;
+    if (!isAudioEnabled) { console.warn("Sound is disabled."); return; }
     audio.play().catch(error => console.error('Error playing sound:', error));
 }
 
@@ -70,23 +76,16 @@ function checkForSmile() {
     nodesToWrap.forEach(wrapSmileys);
 }
 
-// Start MutationObserver safely
+// Start MutationObserver later to not crash sites on load
 observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 
-// Enable sound button (optional)
-const enableSoundButton = document.createElement('button');
-enableSoundButton.textContent = 'Enable Sound';
-enableSoundButton.style.position = 'fixed';
-enableSoundButton.style.bottom = '10px';
-enableSoundButton.style.right = '10px';
-enableSoundButton.style.zIndex = '1000';
-document.body.appendChild(enableSoundButton);
-
-enableSoundButton.addEventListener('click', () => {
-    audioContext.resume().then(() => {
-        isAudioEnabled = true;
-        enableSoundButton.remove();
-    });
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
+    if (message.action === "enableSound") {
+        audioContext.resume().then(() => {
+            isAudioEnabled = true;
+            console.log("Sound enabled for :3");
+        });
+    }
 });
 
 // Initial scan for existing `:3`
