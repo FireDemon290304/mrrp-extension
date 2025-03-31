@@ -1,7 +1,7 @@
 const audio = new Audio(chrome.runtime.getURL('Mrrp.mp3'));
 let isAudioEnabled = false;
 const observer = new MutationObserver(checkForSmile);   // Observe DOM changes and apply the function
-const hoverCooldown = 10; // Cooldown per instance of `:3`. There to stop constant replays of the sound
+const hoverCooldown = 100; // Cooldown per instance of `:3`. There to stop constant replays of the sound
 const processedNodes = new WeakSet(); // Prevent double-wrapping
 let audioContext = null;
 
@@ -83,13 +83,15 @@ observer.observe(document.body, { childList: true, subtree: true, characterData:
 
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "enableSound") {
-        audioContext.resume().then(() => {
+        !isAudioEnabled ? audioContext.resume().then(() => {
             checkForSmile();
             isAudioEnabled = true;
             console.log("Sound enabled for :3");
-        });
+        }) : undefined;     // Only enable if not already enabled
     }
 });
+
+// For many many many mrrps, remove the check for wether audio already is enabled
 
 // Initial scan for existing `:3`
 //checkForSmile();
