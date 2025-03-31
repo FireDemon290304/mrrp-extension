@@ -1,7 +1,7 @@
 const audio = new Audio(chrome.runtime.getURL('Mrrp.mp3'));
 let isAudioEnabled = false;
 const observer = new MutationObserver(checkForSmile);   // Observe DOM changes and apply the function
-const hoverCooldown = 500; // Cooldown for hover sound
+const hoverCooldown = 100; // Cooldown for hover sound
 const processedNodes = new WeakSet(); // Prevent double-wrapping
 let audioContext = null;
 
