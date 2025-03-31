@@ -2,7 +2,7 @@
   "manifest_version": 3,
   "name": ":3 Sound Player",
   "version": "1.0",
-  "description": "A Chrome extension that highlights ':3' smileys on web pages and plays a sound when hovered over.",
+  "description": "A Chrome extension that highlights ':3' smileys on web pages and plays a sound when hovered over. Mrrp",
   "permissions": ["activeTab", "scripting"],
   "action": {
       "default_title": "Enable sound for :3"
