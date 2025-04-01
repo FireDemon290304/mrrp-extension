@@ -1,20 +1,22 @@
 {
   "manifest_version": 3,
   "name": ":3 Sound Player",
-  "version": "1.1.0",
-  "description": "A Chrome extension that highlights ':3' smileys on web pages and plays a sound when hovered over. Mrrp",
+  "version": "1.1.1",
+  "description": "A Chrome extension that highlights ':3' smileys on web pages and plays a sound when hovered over. Mrrp!",
+  "author": "Faith",
+  "copyright": "2025 Faith. All rights reserved.",
   "permissions": ["activeTab", "scripting"],
   "icons": {
-    "16": "icons/icon16.png",
-    "32": "icons/icon32.png",
-    "48": "icons/icon48.png",
-    "128": "icons/icon128.png"
+    "16": "images/icon16.png",
+    "32": "images/icon32.png",
+    "48": "images/icon48.png",
+    "128": "images/icon128.png"
   },
   "action": {
       "default_title": "Enable sound for :3"
   },
   "background": {
-      "service_worker": "background.js"
+      "service_worker": "scripts/background.js"
   },
   "content_scripts": [{
       "matches": [
@@ -30,7 +32,7 @@
           "https://*.twitch.tv/*",
           "https://*/*.html"
       ],
-      "css": ["styles.css"],
-      "js": ["content.js"]
+      "css": ["scripts/styles.css"],
+      "js": ["scripts/content.js"]
   }]
 }
