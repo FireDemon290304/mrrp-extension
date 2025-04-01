@@ -1,6 +1,7 @@
 const hoverCooldown = 200; // Cooldown per instance of `:3 in ms`. There to stop constant replays of the sound
 const observer = new MutationObserver(checkForSmile);   // Observe DOM changes and apply function
 const processedNodes = new WeakSet(); // Prevent double-wrapping
+const observerSettings = { childList: true, subtree: true, characterData: true };
 
 let isAudioEnabled = false;
 let audioContext = null;
@@ -43,11 +44,7 @@ async function playSound() {
 
 // Function to wrap `:3` in a <span>
 function wrapSmileys(node) {
-    //if (!node.parentNode || processedNodes.has(node)) return; // Skip if already processed
     processedNodes.add(node); // Mark as processed
-
-    // Ensure we are not double-processing spans
-    //if (node.parentNode.classList?.contains('mrrp')) return;
 
     const regex = /:3/g;
     let match;
@@ -86,7 +83,7 @@ function wrapSmileys(node) {
     // Pause observer before modifying the DOM to prevent recursion
     observer.disconnect();
     parent.replaceChild(newContent, node);
-    observer.observe(document.body, { childList: true, subtree: true, characterData: true });
+    observer.observe(document.body, observerSettings);
 }
 
 // Detect and highlight `:3`
@@ -106,30 +103,26 @@ function checkForSmile() {
 
 // -------------------------------- Actions to do at load --------------------------------
 // Start MutationObserver later to not crash sites on load
-observer.observe(document.body, { childList: true, subtree: true, characterData: true });
 loadAudio().then(() => { console.log("Loaded audio and created context"); });
 
 // -------------------------------- Listeners --------------------------------
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
     if (message.action === "toggle") {
-        !isAudioEnabled ? audioContext.resume().then(() => {
+        !isAudioEnabled ? audioContext.resume().then(() => {    // Enable sound
+            observer.observe(document.body, { childList: true, subtree: true, characterData: true });
             checkForSmile();
             isAudioEnabled = true;
             console.log("Sound enabled for :3");
-        }) : audioContext.suspend().then(() => {    // disable sound
-
+        })
+        : audioContext.suspend().then(() => {    // disable sound
             document.querySelectorAll('.mrrp').forEach(span => {   // remove span wrappers
                 const textNode = document.createTextNode(span.textContent);
                 span.replaceWith(textNode);     // Replace with raw text
             });
-
-            observer.disconnect();          // prevent recursion
+            observer.disconnect();
         }).then(() => {                     // rem reset flag and log
             isAudioEnabled = false;
             console.log("Sound disabled for :3");
         });
     }
 });
-
-// Initial scan for existing `:3`
-//checkForSmile();
