@@ -1,7 +1,7 @@
 {
   "manifest_version": 3,
   "name": ":3 Sound Player",
-  "version": "1.0",
+  "version": "1.1.0",
   "description": "A Chrome extension that highlights ':3' smileys on web pages and plays a sound when hovered over. Mrrp",
   "permissions": ["activeTab", "scripting"],
   "icons": {
@@ -17,12 +17,20 @@
       "service_worker": "background.js"
   },
   "content_scripts": [{
-      "matches": ["<all_urls>"],
+      "matches": [
+          "https://*.twitter.com/*",
+          "https://*.facebook.com/*",
+          "https://*.instagram.com/*",
+          "https://*.reddit.com/*",
+          "https://*.discord.com/*",
+          "https://*.tumblr.com/*",
+          "https://*.web.whatsapp.com/*",
+          "https://*.messenger.com/*",
+          "https://*.youtube.com/*",
+          "https://*.twitch.tv/*",
+          "https://*/*.html"
+      ],
       "css": ["styles.css"],
       "js": ["content.js"]
-  }],
-  "web_accessible_resources": [{
-      "resources": ["Mrrp.mp3"],
-      "matches": ["<all_urls>"]
   }]
 }
