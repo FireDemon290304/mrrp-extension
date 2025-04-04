@@ -1,3 +1,6 @@
 - [ ] Add more sounds
 - [ ] Pitch(and other) shift sounds
+- [ ] Do injection only after interaction, not immediately (scripting.executeScript() from background worker). Manifest V3 best practices.
+- [ ] More limited DOM use
+- [ ] Maybe use ressource again, ad apparently encoding can be suspicious
 - [ ] 
