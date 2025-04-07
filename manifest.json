@@ -5,7 +5,7 @@
   "description": "A Chrome extension that highlights ':3' smileys on web pages and plays a sound when hovered over. Mrrp!",
   "author": "Faith",
   "copyright": "2025 Faith. All rights reserved.",
-  "permissions": ["activeTab", "scripting"],
+  "permissions": ["activeTab"],
   "icons": {
     "16": "images/icon16.png",
     "32": "images/icon32.png",
